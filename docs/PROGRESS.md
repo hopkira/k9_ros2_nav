@@ -13,9 +13,13 @@
   minimum 397 finite returns per scan.
 - Jetson independently received 119 messages at 9.9411 Hz via ROS 2.
 - Final SIGINT shutdown was clean; serial port released.
+- Owner confirmed physical scan orientation in RViz: +X forward, +Y left,
+  +Z up, with target returns agreeing with the left/right directions. This
+  validates scan orientation, not the sensor mounting transform in robot TF.
 
-Tests establish hardware communication and ROS transport, not physical scan
-accuracy, orientation, per-ray timing or navigation readiness. Driver timestamps
+Automated tests establish hardware communication and ROS transport. The owner
+subsequently confirmed physical scan orientation. Distance accuracy, per-ray
+timing and navigation readiness remain unverified. Driver timestamps
 have not been verified against acquisition time. Upstream lint tests were not
 run because their clang-format dependency was absent; live tests were performed.
 
@@ -29,7 +33,7 @@ occluded, not confirmed clear behind the buttons/head.
 
 ## Next steps
 
-1. Inspect `/scan_raw` in RViz and verify physical direction and distance.
+1. Check range accuracy against measured target distances in an unobstructed sector.
 2. Connect the sensor to the shared robot TF and check the real mounting pose.
 3. Determine button/head angular masks and publish a filtered navigation scan.
 4. Validate wheel odometry and single TF ownership.
