@@ -105,3 +105,8 @@ scene/noise. Navigation package rebuilt successfully; standalone filter PID
 5596 remains active for RViz. Owner subsequently confirmed a 3 cm high book is clearly visible on the floor
 in the filtered cloud. This validates retention in that scene, not guaranteed
 3 cm detection across distances, materials or viewing angles.
+
+Owner also confirmed the book remains visible to the left and right, and that
+obstacles are detected as close as K9's nose in the current temporary mounting.
+Exact near-range distances and full-footprint coverage were not measured;
+this is a stationary visual check, not a braking or collision-stop test.
