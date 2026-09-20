@@ -196,3 +196,14 @@ sensor publishers. Pi received scan 9.82 Hz, raw cloud 12.63 Hz (320x200), obsta
 obstacles 4.74 Hz, floor valid 79/79. Acquisition stamps advanced on all streams.
 No Nav2/motor command integration performed. Camera mount TF, speckles and
 longer-run reliability/latency remain outstanding.
+
+## Reboot startup recovery
+
+User reported no OAK obstacle cloud after Pi reboot/standard launch. Raw clouds
+were reaching both hosts at 15 Hz; only the floor reader was silent despite
+compatible QoS and a responsive node. Added five-second bounded subscription
+recreation and waiting_for_cloud status, without changing floor or camera tuning.
+Five geometry tests plus a real ROS missing-input/resumption test passed.
+Restarted standard launch (PID 3500); one reconnect occurred during startup.
+Jetson verified 44 fresh obstacle clouds at 2.76 Hz, raw cloud 13.87 Hz and scan
+9.84 Hz. Underlying startup/DDS cause and throughput variability remain open.

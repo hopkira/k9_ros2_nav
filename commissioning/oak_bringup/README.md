@@ -22,8 +22,8 @@ ros2 launch k9_system_pkg k9.launch.py platform:=pi
 `enable_oak:=false` skips camera and floor processing;
 `enable_oak_floor_filter:=false` skips only floor processing. Jetson launches
 neither. Stop the previous standard/standalone sessions before starting another.
-The verified integrated launch is PID 10016 (a commissioning snapshot, not a
-persistent PID). Log: `~/k9_ws/oak_bringup/system-integrated.log` on the Pi.
+The verified integrated launch is PID 3500 (a commissioning snapshot, not a
+persistent PID). Log: `~/k9_ws/oak_bringup/recovery-startup.log` on the Pi.
 Standalone oak.launch.py remains available for commissioning only.
 
 Topics:
@@ -71,7 +71,9 @@ be lost. It retains below-plane anomalies. Forward ROI: 0.2–3 m optical Z,
 +/-1.5 m optical X. This is not full-camera or full-robot coverage.
 
 If a fit fails it passes the finite ROI through without floor removal, rather
-than reusing a stale plane. Missing input yields no new output. An unexpected
+than reusing a stale plane. Missing input yields no new obstacle/floor cloud. After five seconds without
+input the reader is recreated, at most once every five seconds, and status
+reports `waiting_for_cloud`. An unexpected
 frame produces an error status and no output. Downstream stale-data monitoring
 is still required; this node is not wired into collision control.
 
@@ -202,3 +204,24 @@ Pi reception: /scan 9.82 Hz, /oak/points 12.63 Hz (320x200), /oak/obstacles 4.93
 received cloud/scan had a distinct acquisition timestamp. These are short
 subscriber measurements, not guaranteed sustained rates or latency tests.
 Camera mount TF and nearby speckles remain outstanding before navigation use.
+
+## Startup input recovery after Pi reboot
+
+After a Pi reboot the camera and 320x200 raw cloud worked at 15 Hz on both hosts,
+but the live floor-filter reader received no data and produced no status or
+obstacle clouds. Its parameter services worked, use_sim_time was false and
+publisher/subscriber QoS were compatible. New diagnostic readers received data;
+the underlying DDS/startup cause is not established.
+
+Added a bounded recovery: after 5 seconds without input, recreate the cloud
+subscription (at most every 5 seconds), report waiting_for_cloud and count
+subscription_reconnects. No stale cloud or stale plane is reused. Floor geometry,
+thresholds and camera settings are unchanged. Five geometry tests and a ROS
+integration test passed; the latter checks absent input, reader recreation,
+resumption on synthetic data and no replay while input is missing.
+
+Fresh standard launch PID 3500 reconnected once during camera startup. Jetson
+received /scan at 9.84 Hz, /oak/points at 13.87 Hz and /oak/obstacles at 2.76 Hz
+(44 clouds with distinct acquisition stamps). 50/51 sampled status reports were
+valid; the waiting status is included in that denominator. Throughput still
+varies with load; this is recovery of input delivery, not a performance fix.

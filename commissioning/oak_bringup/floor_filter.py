@@ -88,12 +88,32 @@ def main():
     floor_pub = node.create_publisher(PointCloud2, '/oak/floor', outgoing)
     status = node.create_publisher(String, '/oak/floor_filter/status', outgoing)
     pending = [None]
+    last_input = [time.monotonic()]
+    last_reconnect = [last_input[0]]
+    reconnects = [0]
     def receive(message):
         pending[0] = message
+        last_input[0] = time.monotonic()
     subscription = node.create_subscription(PointCloud2, '/oak/points', receive, incoming)
     def process():
+        nonlocal subscription
         message, pending[0] = pending[0], None
         if message is None:
+            now = time.monotonic()
+            if now-last_input[0] >= 5.0 and now-last_reconnect[0] >= 5.0:
+                # Rebuild a reader that may have missed camera startup/discovery.
+                # Never republish old clouds or interpret absent input as free space.
+                node.destroy_subscription(subscription)
+                subscription = node.create_subscription(
+                    PointCloud2, '/oak/points', receive, incoming)
+                last_reconnect[0] = now
+                reconnects[0] += 1
+                node.get_logger().warning('No point cloud for %.1f s; reconnecting subscription'
+                                          % (now-last_input[0]))
+                status.publish(String(data=json.dumps({
+                    'valid': False, 'state': 'waiting_for_cloud',
+                    'input_age_s': round(now-last_input[0], 1),
+                    'subscription_reconnects': reconnects[0]})))
             return
         if message.header.frame_id != 'oak_rgb_camera_optical_frame':
             status.publish(String(data=json.dumps({'valid': False, 'error': 'unexpected frame',
@@ -106,7 +126,7 @@ def main():
         obstacles.publish(point_cloud2.create_cloud_xyz32(message.header, kept))
         if floor_pub.get_subscription_count():
             floor_pub.publish(point_cloud2.create_cloud_xyz32(message.header, removed))
-        report = {'valid': plane is not None, 'kept': len(kept), 'floor_points': len(removed),
+        report = {'valid': plane is not None, 'subscription_reconnects': reconnects[0], 'kept': len(kept), 'floor_points': len(removed),
                   'processing_ms': round((time.monotonic()-started)*1000, 1),
                   'source_stamp': message.header.stamp.sec + message.header.stamp.nanosec/1e9}
         if plane is not None:
