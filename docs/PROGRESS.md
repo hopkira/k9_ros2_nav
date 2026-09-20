@@ -16,10 +16,13 @@
 - Owner confirmed physical scan orientation in RViz: +X forward, +Y left,
   +Z up, with target returns agreeing with the left/right directions. This
   validates scan orientation, not the sensor mounting transform in robot TF.
+- Owner confirmed measured distances agree with the 1 m RViz grid squares.
+  This is an approximate range-scale check, not a quantified accuracy calibration.
 
 Automated tests establish hardware communication and ROS transport. The owner
-subsequently confirmed physical scan orientation. Distance accuracy, per-ray
-timing and navigation readiness remain unverified. Driver timestamps
+subsequently confirmed physical scan orientation and approximate range scale.
+Quantified distance accuracy, per-ray timing and navigation readiness remain
+unverified. Driver timestamps
 have not been verified against acquisition time. Upstream lint tests were not
 run because their clang-format dependency was absent; live tests were performed.
 
@@ -33,7 +36,7 @@ occluded, not confirmed clear behind the buttons/head.
 
 ## Next steps
 
-1. Check range accuracy against measured target distances in an unobstructed sector.
+1. Identify button/head self-return angles in the raw scan; approximate range scale is confirmed.
 2. Connect the sensor to the shared robot TF and check the real mounting pose.
 3. Determine button/head angular masks and publish a filtered navigation scan.
 4. Validate wheel odometry and single TF ownership.
