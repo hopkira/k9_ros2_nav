@@ -92,4 +92,4 @@ kill -TERM 8475
 
 In RViz add a LaserScan display for `/scan`, Best Effort reliability, fixed frame
 `base_laser`. Toggle `/scan_raw` off to see only filtered returns, or use different
-colours to compare. The 20 cm cutoff is provisional pending visual confirmation.
+colours to compare. The owner confirmed the 20 cm filtered scan is consistently clean in RViz.

@@ -65,3 +65,5 @@ forward. No readings below 12 cm survived. The owner selected a 20 cm cutoff,
 noting the robot's 50 cm base dimension. The default is now 0.20 m; raw scans
 remain unchanged and masked space remains unknown. This does not independently
 validate full-footprint collision coverage.
+
+Owner confirmed the 20 cm filtered scan is consistently clean in RViz.
