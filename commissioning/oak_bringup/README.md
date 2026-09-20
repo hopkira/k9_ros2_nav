@@ -16,8 +16,8 @@ ros2 launch ~/k9_ws/oak_bringup/oak.launch.py
 ```
 
 Use the same ROS networking settings as the rest of K9 (domain 9). After enabling speckle filtering, the standalone launch was restarted as PID
-6386 (commissioning snapshot; check current processes before launching). Do not
-start a duplicate. Logs: `~/k9_ws/oak_bringup/speckle.log` on the Pi.
+7417 (commissioning snapshot; check current processes before launching). Do not
+start a duplicate. Logs: `~/k9_ws/oak_bringup/spatial.log` on the Pi.
 
 Topics:
 - `/oak/stereo/image_raw`: 16UC1 depth, measured 15.002 Hz over 100 frames.
@@ -110,3 +110,20 @@ ranged 0.2354–0.2644 m; latest height 0.2519 m, tilt 6.38°, support 0.314,
 including partial floor visibility with a 3 cm obstacle and wall-only rejection
 at the lower support threshold. Recheck the physical book: synthetic retention
 does not establish small-object performance with this observed fit variation.
+
+## Light spatial-filter trial
+
+Owner confirmed real book detection after the floor retune, but reported little
+improvement in speckling from the camera speckle filter alone. Enabled spatial
+filtering: alpha 0.7, delta 10, hole-filling radius 0, one iteration. Speckle
+filter stays enabled and temporal filtering stays disabled. Floor tuning is
+unchanged. Live parameters verified all these settings. The installed driver
+uses `i_spatial_filter_iterations`, unlike the `num_iterations` spelling in the
+current online parameter documentation:
+https://docs.luxonis.com/software-v3/depthai/ros/parameters
+
+After camera restart: 30/30 valid floor estimates, 3.00 Hz status/output processing
+rate, latest processing time 154.9 ms, height 0.246 m and tilt 6.64 degrees.
+This sample was slower than the previous ~5 Hz; the cause needs profiling before
+collision use. Visual noise improvement and physical book retention with spatial
+filtering are still unconfirmed. Launch PID 7417; spatial.log records startup.

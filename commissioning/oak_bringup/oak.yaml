@@ -9,6 +9,12 @@
     stereo:
       i_depth_preset: DEFAULT
       i_enable_speckle_filter: true
+      i_enable_spatial_filter: true
+      i_spatial_filter_hole_filling_radius: 0
+      i_spatial_filter_alpha: 0.7
+      i_spatial_filter_delta: 10
+      i_spatial_filter_iterations: 1
+      i_enable_temporal_filter: false
       i_aligned: false
       i_fps: 15.0
       i_width: 640

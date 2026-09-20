@@ -131,3 +131,13 @@ Deployed/rebuilt on the Pi and restarted only the floor filter (PID 6995).
 Five tests passed. Live check: 62/62 valid floor fits at 5.04 Hz; latest height
 25.19 cm and tilt 6.38°, height range 23.54–26.44 cm. Physical book retention
 and noise reduction need visual confirmation with the current scene.
+
+## OAK spatial-filter visual trial
+
+Owner confirmed book retention after floor retuning; speckle-only filtering did
+not visibly reduce noise much. Added a light camera spatial filter (alpha .7,
+delta 10, one iteration, no hole filling), retaining speckle and leaving temporal
+off. Deployed both Pi config copies and rebuilt; active parameters verified.
+Floor settings unchanged. 30/30 valid fits after restart; sampled output rate
+~3 Hz versus ~5 Hz previously. Noise reduction, book retention with this new
+filter, and performance impact remain to be assessed.
