@@ -1,12 +1,16 @@
-"""K9 LD06 commissioning: raw scans only; robot description owns sensor TF."""
+"""K9 LD06 commissioning: raw and filtered scans; robot description owns sensor TF."""
+import sys
 from pathlib import Path
 from launch import LaunchDescription
+from launch.actions import ExecuteProcess
 from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
 
 
 def generate_launch_description():
     return LaunchDescription([
+        ExecuteProcess(cmd=[sys.executable, str(Path(__file__).with_name("filter_scan.py"))],
+                       output="screen"),
         ComposableNodeContainer(
             name='ld06_container', namespace='',
             package='rclcpp_components', executable='component_container_isolated',

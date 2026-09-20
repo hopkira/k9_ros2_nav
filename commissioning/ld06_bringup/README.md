@@ -61,3 +61,35 @@ accuracy, mounting TF and the head-obstructed sector still need validation.
 No head mask, SLAM, Nav2, motor motion or automatic startup has been enabled.
 Transport timestamp checks do not establish sensor acquisition-time accuracy.
 The checker is a transport sanity check, not a navigation acceptance test.
+
+## 12 cm self-return filter
+
+The main launch now also publishes `/scan`, with returns below 0.12 m replaced
+by NaN. `/scan_raw` is preserved. The output range_min is at least 0.12 m;
+headers, scan geometry, timing, intensities and all other ranges are preserved.
+This is a proximity mask, not evidence of clearance behind K9's buttons/panel.
+
+For an already-running driver, start only the filter:
+
+```bash
+ros2 launch ~/k9_ws/ld06_bringup/ld06_filter.launch.py
+```
+
+Use the same ROS environment as the driver. At deployment the user's active
+session used ROS_DOMAIN_ID=9, RMW_IMPLEMENTATION=rmw_cyclonedds_cpp,
+ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET and
+CYCLONEDDS_URI=file:///home/hopkira/.config/cyclonedds/k9.xml.
+
+For immediate RViz comparison a standalone filter was started on the Pi as PID
+8032, with output in `~/k9_ws/ld06_bringup/filter.log`. Stop that instance before
+starting the updated full launch (to avoid duplicate /scan publishers):
+
+```bash
+# Verify the PID still belongs to filter_scan.py before stopping it.
+ps -p 8032 -o args=
+kill -TERM 8032
+```
+
+In RViz add a LaserScan display for `/scan`, Best Effort reliability, fixed frame
+`base_laser`. Toggle `/scan_raw` off to see only filtered returns, or use different
+colours to compare. The 12 cm cutoff is provisional pending visual confirmation.

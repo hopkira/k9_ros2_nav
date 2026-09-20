@@ -47,3 +47,12 @@ occluded, not confirmed clear behind the buttons/head.
 
 No automatic startup, SLAM, Nav2 or robot movement was enabled during the LD06
 bring-up. The Pi commissioning files remain at `~/k9_ws/ld06_bringup`.
+
+## Self-return filter refinement
+
+Owner identified close returns as buttons and sloping back panel, all within
+10 cm, then requested a 12 cm threshold based on tape measurement. Implemented
+configurable minimum-range filter: `/scan_raw` remains unchanged; `/scan` masks
+ranges below 0.12 m as NaN. Two regression tests cover boundary behaviour,
+invalid values, sensor minimum, unchanged raw input and retained metadata.
+Visual confirmation of the chosen threshold is pending.

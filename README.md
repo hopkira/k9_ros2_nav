@@ -36,7 +36,9 @@ source ~/k9_ws/install/local_setup.bash
 ros2 launch /path/to/k9_ros2_nav/commissioning/ld06_bringup/ld06.launch.py
 ```
 
-Output: `/scan_raw` (`sensor_msgs/msg/LaserScan`), frame `base_laser`.
+Outputs: `/scan_raw` and `/scan` (`sensor_msgs/msg/LaserScan`), frame `base_laser`.
+The filtered `/scan` replaces returns below 0.12 m with NaN, preserving unknown
+space behind close self-returns.
 Stop with Ctrl+C. No boot service is installed. For initial RViz inspection,
 use `base_laser` as the fixed frame; full robot TF integration is still pending.
 
