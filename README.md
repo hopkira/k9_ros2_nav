@@ -52,8 +52,9 @@ this repository documents the intended shared frames rather than duplicating it.
 
 ## Standard system startup
 
-`k9_system_pkg/k9.launch.py` now includes this package's LD06 launch and the
-shared robot description on `platform:=pi` or `platform:=all`; Jetson skips both.
+`k9_system_pkg/k9.launch.py` includes this package's LD06, OAK camera and floor
+filter launches, plus the shared robot description, on `platform:=pi` or
+`platform:=all`. Jetson skips these hardware launches and consumes their topics.
 Build `k9_ros2_nav`, `k9_description` and `k9_system_pkg` on the Pi.
 
 ```bash
@@ -61,8 +62,11 @@ ros2 launch k9_system_pkg k9.launch.py platform:=pi
 ```
 
 Stop standalone commissioning instances before standard startup, or use
-`enable_ld06:=false enable_robot_description:=false` while those instances
-remain running. The system launch starts other K9 nodes too.
+`enable_ld06:=false enable_robot_description:=false enable_oak:=false` while those instances
+remain running. `enable_oak_floor_filter:=false` keeps OAK raw depth/cloud only
+when `enable_oak` is true. The system launch starts other K9 nodes too.
 
 Robot geometry is owned by `k9_description` in `k9-gazebo`; system bring-up
-launches it with `sim:=false`. The navigation package does not publish TF.
+launches it with `sim:=false`. The OAK driver publishes its internal camera
+calibration frames below the shared `oakd_link`; the mounting transform remains
+owned by the robot description and needs adjustment for the final camera mount.

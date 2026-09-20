@@ -10,14 +10,21 @@ is set to 15 Hz. Requested width/height are 640x400 but observed output is
 reported USB HIGH (USB 2) after boot. This configuration is an initial test,
 not a validated collision-avoidance sensor configuration.
 
+The standard system launch now owns camera and floor processing on Pi/all:
+
 ```bash
 source /opt/ros/jazzy/setup.bash
-ros2 launch ~/k9_ws/oak_bringup/oak.launch.py
+source ~/k9_ws/install/local_setup.bash
+# Use the normal K9 domain 9/CycloneDDS environment.
+ros2 launch k9_system_pkg k9.launch.py platform:=pi
 ```
 
-Use the same ROS networking settings as the rest of K9 (domain 9). After enabling speckle filtering, the standalone launch was restarted as PID
-9211 (commissioning snapshot; check current processes before launching). Do not
-start a duplicate. Logs: `~/k9_ws/oak_bringup/restored-resolution.log` on the Pi.
+`enable_oak:=false` skips camera and floor processing;
+`enable_oak_floor_filter:=false` skips only floor processing. Jetson launches
+neither. Stop the previous standard/standalone sessions before starting another.
+The verified integrated launch is PID 10016 (a commissioning snapshot, not a
+persistent PID). Log: `~/k9_ws/oak_bringup/system-integrated.log` on the Pi.
+Standalone oak.launch.py remains available for commissioning only.
 
 Topics:
 - `/oak/stereo/image_raw`: 16UC1 depth, measured 15.002 Hz over 100 frames.
@@ -33,7 +40,7 @@ must be running; then use `base_link` as fixed frame.
 Outstanding: verify cloud geometry and CameraInfo correspondence, measure CPU
 and USB load, check USB 3 cable/link, reconcile model camera height (32.44 cm
 above nominal floor) against owner's intended 26 cm, and verify startup/shutdown
-before integration into standard bring-up. The first bounded driver shutdown
+after integration into standard bring-up. The first bounded driver shutdown
 required signal escalation; graceful shutdown remains to be investigated.
 
 Initial cloud check: 60 messages, 320x200 XYZ points, 1,024,000 bytes/message,
@@ -43,8 +50,8 @@ depth-only rate; cloud conversion/transport needs profiling before collision use
 ## Adaptive floor rejection (temporary mount)
 
 Run `oak_floor_filter.launch.py` alongside the camera. It is also installed at
-`share/k9_ros2_nav/oak/` when this package is built. A standalone filter was
-restarted on the Pi as PID 9212 for commissioning; avoid starting a second copy.
+`share/k9_ros2_nav/oak/` when this package is built. The standard Pi launch now includes this filter; do not start another copy.
+Standalone use requires disabling it in the standard launch first.
 
 - `/oak/points` remains unchanged.
 - `/oak/obstacles` contains finite forward-region points outside the floor band.
@@ -180,3 +187,18 @@ camera/floor processes as 9211/9212; log restored-resolution.log.
 Verified restored cloud is 320x200; floor fitting succeeded in 56/56 sampled
 frames, output 3.16 Hz. Latest height 0.2419 m, tilt 6.87 degrees, processing
 75.0 ms. Floor settings unchanged; nearby-speckle filtering remains unresolved.
+
+## Standard system launch integration
+
+`k9_system_pkg` now includes the installed camera and floor-filter launches on
+Pi/all, in a scoped group to keep driver launch arguments local. Both enable
+switches default true. Six role/switch combinations passed a launch-construction
+test; system package builds and --show-args succeeded on Pi and Jetson.
+Stopped the old standard Pi session and standalone OAK/floor sessions, then
+started a fresh standard Pi launch (PID 10016). One publisher per topic verified.
+Pi reception: /scan 9.82 Hz, /oak/points 12.63 Hz (320x200), /oak/obstacles 4.93 Hz;
+79/79 valid floor reports. Jetson reception after the fresh launch: /scan 9.88 Hz,
+/oak/points 11.38 Hz, /oak/obstacles 4.74 Hz; 79/79 valid floor reports. Every
+received cloud/scan had a distinct acquisition timestamp. These are short
+subscriber measurements, not guaranteed sustained rates or latency tests.
+Camera mount TF and nearby speckles remain outstanding before navigation use.

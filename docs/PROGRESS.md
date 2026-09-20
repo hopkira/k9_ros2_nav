@@ -181,3 +181,18 @@ and floor filter. No floor threshold changes; spatial/temporal remain off.
 Verified restored cloud is 320x200; floor fitting succeeded in 56/56 sampled
 frames, output 3.16 Hz. Latest height 0.2419 m, tilt 6.87 degrees, processing
 75.0 ms. Floor settings unchanged; nearby-speckle filtering remains unresolved.
+
+## Standard OAK startup and cross-machine verification
+
+Added default-on enable_oak and enable_oak_floor_filter switches to
+k9_system_pkg/k9.launch.py for Pi/all only. The Jetson role does not resolve or
+start the OAK launch. Navigation owns settings; system owns startup. A scoped
+group isolates included driver arguments. Builds/argument introspection passed
+on both hosts; six ownership/switch combinations passed on the Pi.
+Stopped standalone OAK/floor and previous standard Pi launch. Fresh standard
+Pi launch PID 10016 now owns LD06, OAK, floor filter and shared TF. No duplicate
+sensor publishers. Pi received scan 9.82 Hz, raw cloud 12.63 Hz (320x200), obstacles
+4.93 Hz, floor valid 79/79. Jetson received scan 9.88 Hz, raw cloud 11.38 Hz,
+obstacles 4.74 Hz, floor valid 79/79. Acquisition stamps advanced on all streams.
+No Nav2/motor command integration performed. Camera mount TF, speckles and
+longer-run reliability/latency remain outstanding.
