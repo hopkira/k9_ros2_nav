@@ -10,6 +10,11 @@
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>sensor_msgs_py</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>depth_image_proc</exec_depend>
+  <exec_depend>depthai_ros_driver_v3</exec_depend>
   <exec_depend>rclcpp_components</exec_depend>
   <exec_depend>ldlidar_component</exec_depend>
   <exec_depend>nav2_lifecycle_manager</exec_depend>

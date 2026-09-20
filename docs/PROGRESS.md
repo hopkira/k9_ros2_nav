@@ -90,3 +90,16 @@ HIGH (USB 2). Added standalone depth/XYZ cloud launch for RViz commissioning;
 cloud reception measured about 6.15 Hz in the initial 60-frame sample. See
 `commissioning/oak_bringup/README.md` for frames, launch and outstanding checks.
 Not yet integrated into standard system launch or collision avoidance.
+
+## Adaptive OAK floor filter
+
+Added separate `/oak/obstacles` and optional `/oak/floor` outputs, keeping the
+raw cloud intact. Constrained per-cloud plane fitting supports the temporary
+mount; no fixed TF changes. A +/-2.5 cm floor band and bounded forward region
+are documented in the camera README, including small-object limitations.
+
+Three synthetic tests passed on the Pi. Live sample: 26/26 valid floor fits,
+4.995 Hz obstacle clouds; latest report height 0.2372 m, tilt 3.16 degrees,
+15,876 points removed, 36,023 retained, processing 28.2 ms. Values vary with
+scene/noise. Navigation package rebuilt successfully; standalone filter PID
+5596 remains active for RViz. Real obstacle retention awaits user inspection.

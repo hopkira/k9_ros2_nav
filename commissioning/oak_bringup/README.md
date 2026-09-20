@@ -39,3 +39,39 @@ required signal escalation; graceful shutdown remains to be investigated.
 Initial cloud check: 60 messages, 320x200 XYZ points, 1,024,000 bytes/message,
 about 6.15 Hz observed at the Python subscriber. This is lower than the measured
 depth-only rate; cloud conversion/transport needs profiling before collision use.
+
+## Adaptive floor rejection (temporary mount)
+
+Run `oak_floor_filter.launch.py` alongside the camera. It is also installed at
+`share/k9_ros2_nav/oak/` when this package is built. A standalone filter was
+started on the Pi as PID 5596 for commissioning; avoid starting a second copy.
+
+- `/oak/points` remains unchanged.
+- `/oak/obstacles` contains finite forward-region points outside the floor band.
+- `/oak/floor` shows rejected floor points when subscribed.
+- `/oak/floor_filter/status` reports fit validity, height, tilt, point counts and
+  processing time as JSON in a String message.
+
+Outputs use Reliable / Volatile QoS, compatible with RViz Reliable or Best
+Effort. Fixed frame remains `oak_rgb_camera_optical_frame` for camera-only views.
+The output retains input frame and acquisition timestamp. No TF is changed.
+
+The filter selects a near-horizontal RANSAC plane, constrained to 18–34 cm below
+the optical origin and at most 15 degrees tilt, with minimum support and spatial
+extent. It refits each processed cloud, at most 5 Hz, with a one-message input
+queue. It removes points within +/-2.5 cm of the plane; smaller protrusions may
+be lost. It retains below-plane anomalies. Forward ROI: 0.2–3 m optical Z,
++/-1.5 m optical X. This is not full-camera or full-robot coverage.
+
+If a fit fails it passes the finite ROI through without floor removal, rather
+than reusing a stale plane. Missing input yields no new output. An unexpected
+frame produces an error status and no output. Downstream stale-data monitoring
+is still required; this node is not wired into collision control.
+
+Final intended mount is level, with optical centre 26 cm above floor. Current
+physical mount is temporary (~24 cm with ~2.3-degree floor-relative tilt). Do not
+use the uncorrected model camera height for floor-height rejection.
+
+Three synthetic tests cover tilted floor with a 6 cm obstacle, wall-only input,
+and sparse/invalid input. Live visual confirmation with actual obstacles is
+still required, including loss of floor visibility and thin/low objects.
