@@ -67,3 +67,17 @@ remain unchanged and masked space remains unknown. This does not independently
 validate full-footprint collision coverage.
 
 Owner confirmed the 20 cm filtered scan is consistently clean in RViz.
+
+## Shared system bring-up and TF
+
+Added robot-description and LD06 launches to `k9_system_pkg/k9.launch.py`,
+enabled by default only on Pi/all. Explicit enable flags allow commissioning
+instances to remain separate. Both machines rebuilt successfully.
+The shared current Gazebo description was deployed on the Pi and a standalone
+robot_state_publisher was started (launch PID 9240) without other hardware nodes.
+Live TF verified base_link -> base_laser (-0.112, 0, 0.53) m, zero rotation;
+nominal floor height 0.5994 m. Stop the standalone publisher before full startup.
+Pi's and Jetson's existing launch customisations were preserved when adding the
+new blocks; their complete launch files differ from the Mac checkout.
+The Pi description deployment is a snapshot of the current local Gazebo source,
+including uncommitted model corrections; it is not a clean upstream Git clone.

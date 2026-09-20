@@ -9,8 +9,7 @@ The LD06 driver has been built and tested on the Pi. Raw scans reach both the
 Pi and Jetson at approximately 10 Hz, with 455 fixed angular bins. The driver
 shuts down cleanly after the local fixes recorded here.
 
-This repository currently contains commissioning files, not an installable
-ROS package. SLAM, autonomous navigation and collision avoidance are planned
+This repository now provides the installable `k9_ros2_nav` launch package. SLAM, autonomous navigation and collision avoidance are planned
 but have not been commissioned by this work.
 
 - [LD06 launch, configuration and reproduction instructions](commissioning/ld06_bringup/README.md)
@@ -50,3 +49,20 @@ use `base_laser` as the fixed frame; full robot TF integration is still pending.
 
 The robot description remains owned by the Gazebo/description repository;
 this repository documents the intended shared frames rather than duplicating it.
+
+## Standard system startup
+
+`k9_system_pkg/k9.launch.py` now includes this package's LD06 launch and the
+shared robot description on `platform:=pi` or `platform:=all`; Jetson skips both.
+Build `k9_ros2_nav`, `k9_description` and `k9_system_pkg` on the Pi.
+
+```bash
+ros2 launch k9_system_pkg k9.launch.py platform:=pi
+```
+
+Stop standalone commissioning instances before standard startup, or use
+`enable_ld06:=false enable_robot_description:=false` while those instances
+remain running. The system launch starts other K9 nodes too.
+
+Robot geometry is owned by `k9_description` in `k9-gazebo`; system bring-up
+launches it with `sim:=false`. The navigation package does not publish TF.
