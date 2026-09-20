@@ -81,3 +81,12 @@ Pi's and Jetson's existing launch customisations were preserved when adding the
 new blocks; their complete launch files differ from the Mac checkout.
 The Pi description deployment is a snapshot of the current local Gazebo source,
 including uncommitted model corrections; it is not a clean upstream Git clone.
+
+## OAK-D Lite initial bring-up
+
+Driver installed and USB access confirmed. Depth-only stream measured at 15 Hz,
+320x200, 16UC1. No IMU available; no neural networks enabled. Booted USB link is
+HIGH (USB 2). Added standalone depth/XYZ cloud launch for RViz commissioning;
+cloud reception measured about 6.15 Hz in the initial 60-frame sample. See
+`commissioning/oak_bringup/README.md` for frames, launch and outstanding checks.
+Not yet integrated into standard system launch or collision avoidance.
