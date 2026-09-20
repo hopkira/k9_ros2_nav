@@ -102,4 +102,6 @@ Three synthetic tests passed on the Pi. Live sample: 26/26 valid floor fits,
 4.995 Hz obstacle clouds; latest report height 0.2372 m, tilt 3.16 degrees,
 15,876 points removed, 36,023 retained, processing 28.2 ms. Values vary with
 scene/noise. Navigation package rebuilt successfully; standalone filter PID
-5596 remains active for RViz. Real obstacle retention awaits user inspection.
+5596 remains active for RViz. Owner subsequently confirmed a 3 cm high book is clearly visible on the floor
+in the filtered cloud. This validates retention in that scene, not guaranteed
+3 cm detection across distances, materials or viewing angles.
