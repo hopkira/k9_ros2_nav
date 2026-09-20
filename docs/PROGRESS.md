@@ -156,3 +156,18 @@ to that filter alone. One camera container and one floor filter were running;
 CPU snapshot showed camera ~88%, floor filter ~38%, kiosk video ~45% (per-core
 percentages), temperature 57.3°C. Throughput needs separate profiling; no other
 services or floor parameters were changed.
+
+## Median decimation trial
+
+Enabled NON_ZERO_MEDIAN decimation on the camera. Factor 2 kept the old 320x200
+output; factor 4 against the driver's 640x400 input achieves the requested
+halving to 160x100. Both Pi configuration copies deployed, package rebuilt and
+camera/floor processes restarted. Spatial/temporal off, speckle on, floor tuning
+unchanged.
+
+Live result: 160x100 cloud, 256,000 bytes/message versus 1,024,000 previously;
+15.00 Hz cloud reception. CameraInfo is 160x100 with focal lengths 113.1202,
+half the previous 226.2405. Floor output 4.54 Hz, 81/91 valid fits; failed fits
+passed through without floor removal. Latest valid height 0.2651 m, tilt 5.51°,
+support 0.207, processing 62.9 ms. Intermittent floor rejection and physical
+book/noise performance remain to be assessed. No floor thresholds were loosened.

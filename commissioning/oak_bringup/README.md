@@ -16,8 +16,8 @@ ros2 launch ~/k9_ws/oak_bringup/oak.launch.py
 ```
 
 Use the same ROS networking settings as the rest of K9 (domain 9). After enabling speckle filtering, the standalone launch was restarted as PID
-7894 (commissioning snapshot; check current processes before launching). Do not
-start a duplicate. Logs: `~/k9_ws/oak_bringup/spatial-disabled.log` on the Pi.
+8748 (commissioning snapshot; check current processes before launching). Do not
+start a duplicate. Logs: `~/k9_ws/oak_bringup/decimation.log` on the Pi.
 
 Topics:
 - `/oak/stereo/image_raw`: 16UC1 depth, measured 15.002 Hz over 100 frames.
@@ -44,7 +44,7 @@ depth-only rate; cloud conversion/transport needs profiling before collision use
 
 Run `oak_floor_filter.launch.py` alongside the camera. It is also installed at
 `share/k9_ros2_nav/oak/` when this package is built. A standalone filter was
-restarted on the Pi as PID 6995 for commissioning; avoid starting a second copy.
+restarted on the Pi as PID 8749 for commissioning; avoid starting a second copy.
 
 - `/oak/points` remains unchanged.
 - `/oak/obstacles` contains finite forward-region points outside the floor band.
@@ -144,3 +144,24 @@ to that filter alone. One camera container and one floor filter were running;
 CPU snapshot showed camera ~88%, floor filter ~38%, kiosk video ~45% (per-core
 percentages), temperature 57.3°C. Throughput needs separate profiling; no other
 services or floor parameters were changed.
+
+## Median decimation trial
+
+Enabled NON_ZERO_MEDIAN camera decimation. Factor 2 produced 320x200, matching
+the previous cloud size: the driver explicitly applies the factor to its
+640x400 input. Set factor 4 to target 160x100, half the previous width and height
+and one quarter of the points. Spatial and temporal filters remain off; speckle
+filter and floor parameters are unchanged. The floor process needed restarting
+after the first camera restart (it was alive but published no status during the
+measurement); camera/floor commissioning PIDs are now 8748/8749.
+
+Median decimation may suppress small noise but also removes detail. Repeat the
+physical 3 cm book checks centrally, left/right and near the nose before judging
+this trial successful. CameraInfo dimensions and floor geometry are checked live.
+
+Live result: 160x100 cloud, 256,000 bytes/message versus 1,024,000 previously;
+15.00 Hz cloud reception. CameraInfo is 160x100 with focal lengths 113.1202,
+half the previous 226.2405. Floor output 4.54 Hz, 81/91 valid fits; failed fits
+passed through without floor removal. Latest valid height 0.2651 m, tilt 5.51°,
+support 0.207, processing 62.9 ms. Intermittent floor rejection and physical
+book/noise performance remain to be assessed. No floor thresholds were loosened.
