@@ -20,7 +20,7 @@ def main():
 
     rclpy.init()
     node = Node('ld06_range_filter')
-    cutoff = float(node.declare_parameter('minimum_range', 0.12).value)
+    cutoff = float(node.declare_parameter('minimum_range', 0.20).value)
     if not math.isfinite(cutoff) or cutoff <= 0:
         raise ValueError('minimum_range must be finite and positive')
     publisher = node.create_publisher(LaserScan, '/scan', qos_profile_sensor_data)

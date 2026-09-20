@@ -56,3 +56,12 @@ configurable minimum-range filter: `/scan_raw` remains unchanged; `/scan` masks
 ranges below 0.12 m as NaN. Two regression tests cover boundary behaviour,
 invalid values, sensor minimum, unchanged raw input and retained metadata.
 Visual confirmation of the chosen threshold is pending.
+
+## Cutoff raised to 20 cm
+
+An 80-scan live sample with the 12 cm filter showed 7–21 remaining close
+returns per scan, ranging from 12 to 16.1 cm, primarily 30–39 degrees left of
+forward. No readings below 12 cm survived. The owner selected a 20 cm cutoff,
+noting the robot's 50 cm base dimension. The default is now 0.20 m; raw scans
+remain unchanged and masked space remains unknown. This does not independently
+validate full-footprint collision coverage.
