@@ -141,3 +141,18 @@ off. Deployed both Pi config copies and rebuilt; active parameters verified.
 Floor settings unchanged. 30/30 valid fits after restart; sampled output rate
 ~3 Hz versus ~5 Hz previously. Noise reduction, book retention with this new
 filter, and performance impact remain to be assessed.
+
+## Spatial filter disabled after visual comparison
+
+Owner saw better distant detections but no improvement to nearby speckles, and
+rejected the throughput trade-off. Disabled spatial filtering and redeployed to
+the Pi. Speckle filter and floor tuning retained; temporal filter remains off.
+Nearby speckles remain unresolved; no additional filtering was enabled.
+
+Post-revert live check: spatial parameter false; 49/49 valid floor fits, but
+sampled output remained 2.74 Hz (latest processing 114.4 ms). Disabling spatial
+filtering did not restore the earlier ~5 Hz, so the slowdown cannot be attributed
+to that filter alone. One camera container and one floor filter were running;
+CPU snapshot showed camera ~88%, floor filter ~38%, kiosk video ~45% (per-core
+percentages), temperature 57.3°C. Throughput needs separate profiling; no other
+services or floor parameters were changed.

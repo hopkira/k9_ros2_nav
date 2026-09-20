@@ -16,8 +16,8 @@ ros2 launch ~/k9_ws/oak_bringup/oak.launch.py
 ```
 
 Use the same ROS networking settings as the rest of K9 (domain 9). After enabling speckle filtering, the standalone launch was restarted as PID
-7417 (commissioning snapshot; check current processes before launching). Do not
-start a duplicate. Logs: `~/k9_ws/oak_bringup/spatial.log` on the Pi.
+7894 (commissioning snapshot; check current processes before launching). Do not
+start a duplicate. Logs: `~/k9_ws/oak_bringup/spatial-disabled.log` on the Pi.
 
 Topics:
 - `/oak/stereo/image_raw`: 16UC1 depth, measured 15.002 Hz over 100 frames.
@@ -127,3 +127,20 @@ rate, latest processing time 154.9 ms, height 0.246 m and tilt 6.64 degrees.
 This sample was slower than the previous ~5 Hz; the cause needs profiling before
 collision use. Visual noise improvement and physical book retention with spatial
 filtering are still unconfirmed. Launch PID 7417; spatial.log records startup.
+
+## Spatial trial reverted
+
+Owner observed improved distant detections but no useful reduction of nearby
+speckles, so the lower output rate was not worthwhile. Disabled spatial filtering
+again; its tuning values remain inert in the config for reproducibility. Speckle
+filtering remains enabled, temporal filtering remains disabled, and floor tuning
+is unchanged. Both Pi configuration copies were updated and the package rebuilt.
+Camera restarted as PID 7894; log is spatial-disabled.log.
+
+Post-revert live check: spatial parameter false; 49/49 valid floor fits, but
+sampled output remained 2.74 Hz (latest processing 114.4 ms). Disabling spatial
+filtering did not restore the earlier ~5 Hz, so the slowdown cannot be attributed
+to that filter alone. One camera container and one floor filter were running;
+CPU snapshot showed camera ~88%, floor filter ~38%, kiosk video ~45% (per-core
+percentages), temperature 57.3°C. Throughput needs separate profiling; no other
+services or floor parameters were changed.
