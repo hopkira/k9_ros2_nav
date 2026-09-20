@@ -171,3 +171,13 @@ half the previous 226.2405. Floor output 4.54 Hz, 81/91 valid fits; failed fits
 passed through without floor removal. Latest valid height 0.2651 m, tilt 5.51°,
 support 0.207, processing 62.9 ms. Intermittent floor rejection and physical
 book/noise performance remain to be assessed. No floor thresholds were loosened.
+
+## Restored 320x200 after decimation trial
+
+Owner reported periodic floor lines and marginal book visibility at 160x100.
+Disabled explicit decimation, redeployed/rebuilt on Pi and restarted camera
+and floor filter. No floor threshold changes; spatial/temporal remain off.
+
+Verified restored cloud is 320x200; floor fitting succeeded in 56/56 sampled
+frames, output 3.16 Hz. Latest height 0.2419 m, tilt 6.87 degrees, processing
+75.0 ms. Floor settings unchanged; nearby-speckle filtering remains unresolved.

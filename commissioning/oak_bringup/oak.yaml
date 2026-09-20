@@ -15,7 +15,7 @@
       i_spatial_filter_delta: 10
       i_spatial_filter_iterations: 1
       i_enable_temporal_filter: false
-      i_enable_decimation_filter: true
+      i_enable_decimation_filter: false
       i_decimation_filter_decimation_mode: NON_ZERO_MEDIAN
       i_decimation_filter_decimation_factor: 4
       i_aligned: false

@@ -16,8 +16,8 @@ ros2 launch ~/k9_ws/oak_bringup/oak.launch.py
 ```
 
 Use the same ROS networking settings as the rest of K9 (domain 9). After enabling speckle filtering, the standalone launch was restarted as PID
-8748 (commissioning snapshot; check current processes before launching). Do not
-start a duplicate. Logs: `~/k9_ws/oak_bringup/decimation.log` on the Pi.
+9211 (commissioning snapshot; check current processes before launching). Do not
+start a duplicate. Logs: `~/k9_ws/oak_bringup/restored-resolution.log` on the Pi.
 
 Topics:
 - `/oak/stereo/image_raw`: 16UC1 depth, measured 15.002 Hz over 100 frames.
@@ -44,7 +44,7 @@ depth-only rate; cloud conversion/transport needs profiling before collision use
 
 Run `oak_floor_filter.launch.py` alongside the camera. It is also installed at
 `share/k9_ros2_nav/oak/` when this package is built. A standalone filter was
-restarted on the Pi as PID 8749 for commissioning; avoid starting a second copy.
+restarted on the Pi as PID 9212 for commissioning; avoid starting a second copy.
 
 - `/oak/points` remains unchanged.
 - `/oak/obstacles` contains finite forward-region points outside the floor band.
@@ -165,3 +165,18 @@ half the previous 226.2405. Floor output 4.54 Hz, 81/91 valid fits; failed fits
 passed through without floor removal. Latest valid height 0.2651 m, tilt 5.51°,
 support 0.207, processing 62.9 ms. Intermittent floor rejection and physical
 book/noise performance remain to be assessed. No floor thresholds were loosened.
+
+## Restore previous resolution
+
+Owner reported periodic horizontal floor lines at 160x100 and only marginal
+book visibility. Live diagnostic found 71/93 valid floor fits at 20% support;
+18% support increased this to 88/93 but accepted variable height estimates up to
+32.8 cm. That lower threshold was not deployed and the floor band was not widened.
+At owner's request, disabled the explicit decimation filter to restore the
+previous 320x200 output. Speckle stays enabled, spatial/temporal off; floor tuning
+unchanged. Both Pi configuration copies updated and package rebuilt. Restarted
+camera/floor processes as 9211/9212; log restored-resolution.log.
+
+Verified restored cloud is 320x200; floor fitting succeeded in 56/56 sampled
+frames, output 3.16 Hz. Latest height 0.2419 m, tilt 6.87 degrees, processing
+75.0 ms. Floor settings unchanged; nearby-speckle filtering remains unresolved.
