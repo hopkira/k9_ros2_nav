@@ -1,0 +1,41 @@
+{
+  "messages": 120,
+  "first": {
+    "stamp": 1789902327.063046,
+    "frame": "base_laser",
+    "bins": 455,
+    "finite": 404,
+    "min": 0.021000001579523087,
+    "max": 8.608000755310059,
+    "out_of_bounds": 7,
+    "angle_min": 0.0,
+    "angle_max": 6.2831854820251465,
+    "angle_increment": 0.013839615508913994,
+    "scan_time": 0.10025167465209961,
+    "time_increment": 0.0002208186633652076,
+    "age_sec": 0.0017135143280029297
+  },
+  "last": {
+    "stamp": 1789902339.0065987,
+    "frame": "base_laser",
+    "bins": 455,
+    "finite": 410,
+    "min": 0.020000001415610313,
+    "max": 8.220000267028809,
+    "out_of_bounds": 2,
+    "angle_min": 0.0,
+    "angle_max": 6.2831854820251465,
+    "angle_increment": 0.013839615508913994,
+    "scan_time": 0.1002800464630127,
+    "time_increment": 0.00022088116384111345,
+    "age_sec": 0.0008342266082763672
+  },
+  "bin_counts": [
+    455
+  ],
+  "finite_min": 397,
+  "max_age_sec": 0.007579803466796875,
+  "invalid_range_count": 636,
+  "hz": 9.963534524907939,
+  "monotonic": true
+}

@@ -1,0 +1,28 @@
+diff --git a/ldlidar_driver/src/serialcom/serial_interface_linux.cpp b/ldlidar_driver/src/serialcom/serial_interface_linux.cpp
+index c110c77..a3f23b7 100644
+--- a/ldlidar_driver/src/serialcom/serial_interface_linux.cpp
++++ b/ldlidar_driver/src/serialcom/serial_interface_linux.cpp
+@@ -105,17 +105,18 @@ bool SerialInterfaceLinux::Close() {
+ 
+   rx_thread_exit_flag_ = true;
+ 
+-  if (com_handle_ != -1) {
+-    close(com_handle_);
+-    com_handle_ = -1;
+-  }
+-
+   if ((rx_thread_ != nullptr) && rx_thread_->joinable()) {
+     rx_thread_->join();
+     delete rx_thread_;
+     rx_thread_ = nullptr;
+   }
+ 
++  // Join the reader before invalidating its descriptor (pselect times out).
++  if (com_handle_ != -1) {
++    close(com_handle_);
++    com_handle_ = -1;
++  }
++
+   is_cmd_opened_ = false;
+ 
+   return true;

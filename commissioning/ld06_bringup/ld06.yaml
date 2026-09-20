@@ -1,0 +1,14 @@
+/**:
+  ros__parameters:
+    comm.serial_port: /dev/lidar360
+    comm.baudrate: 230400
+    comm.timeout_msec: 1000
+    lidar.model: LD06
+    lidar.rot_verse: CCW
+    lidar.units: M
+    lidar.frame_id: base_laser
+    lidar.bins: 455
+    lidar.range_min: 0.03
+    lidar.range_max: 12.0
+    lidar.enable_angle_crop: false
+    general.debug_mode: false

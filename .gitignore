@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+build/
+install/
+log/
+.venv/
+.DS_Store
+*.db3
+*.mcap
