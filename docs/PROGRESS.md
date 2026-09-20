@@ -110,3 +110,13 @@ Owner also confirmed the book remains visible to the left and right, and that
 obstacles are detected as close as K9's nose in the current temporary mounting.
 Exact near-range distances and full-footprint coverage were not measured;
 this is a stationary visual check, not a braking or collision-stop test.
+
+## OAK native speckle filter
+
+Enabled the camera speckle filter, verified its live parameter, deployed both
+Pi configuration copies and rebuilt k9_ros2_nav. Spatial/temporal filters and
+floor rejection settings are unchanged. Obstacle output resumed at 4.99 Hz.
+Floor fitting currently reports invalid after a confirmed camera/scene change;
+repeat the book and floor visual checks before assessing the filter. The driver
+stop service crashed the container after reporting success; a fresh standalone
+launch restored operation. See the camera README for details.

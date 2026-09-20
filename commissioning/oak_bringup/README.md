@@ -15,9 +15,9 @@ source /opt/ros/jazzy/setup.bash
 ros2 launch ~/k9_ws/oak_bringup/oak.launch.py
 ```
 
-Use the same ROS networking settings as the rest of K9 (domain 9). At initial
-deployment a standalone launch is running as PID 5045. Do not start a duplicate.
-Logs: `~/k9_ws/oak_bringup/live.log` on the Pi.
+Use the same ROS networking settings as the rest of K9 (domain 9). After enabling speckle filtering, the standalone launch was restarted as PID
+6386 (commissioning snapshot; check current processes before launching). Do not
+start a duplicate. Logs: `~/k9_ws/oak_bringup/speckle.log` on the Pi.
 
 Topics:
 - `/oak/stereo/image_raw`: 16UC1 depth, measured 15.002 Hz over 100 frames.
@@ -75,3 +75,20 @@ use the uncorrected model camera height for floor-height rejection.
 Three synthetic tests cover tilted floor with a 6 cm obstacle, wall-only input,
 and sparse/invalid input. Live visual confirmation with actual obstacles is
 still required, including loss of floor visibility and thin/low objects.
+
+## Camera speckle filtering
+
+Enabled `stereo.i_enable_speckle_filter` in oak.yaml and verified the live
+parameter is true. The driver reports its default speckle range as 50. Spatial
+and temporal filters remain disabled; the adaptive floor settings are unchanged.
+Configuration was copied to the Pi standalone and package source locations and
+the navigation package rebuilt.
+
+After restart, 34 obstacle clouds arrived at 4.99 Hz. The latest floor fit was
+invalid and therefore passed through the finite ROI; the owner confirmed the
+camera or scene had changed. Repeat the floor/book comparison in the previous
+view before judging noise reduction or small-object retention.
+
+The driver's stop service returned success but its component container then
+crashed (exit -11). Restarting the standalone launch restored the stream.
+Graceful shutdown remains unresolved.
