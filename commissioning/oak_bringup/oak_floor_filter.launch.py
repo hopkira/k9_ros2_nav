@@ -7,6 +7,8 @@ from launch.actions import ExecuteProcess
 
 def generate_launch_description():
     return LaunchDescription([ExecuteProcess(
-        cmd=[sys.executable, str(Path(__file__).with_name('floor_filter.py'))],
+        cmd=[sys.executable, str(Path(__file__).with_name('floor_filter.py')),
+             '--ros-args', '--params-file',
+             str(Path(__file__).with_name('floor_filter.yaml'))],
         additional_env={'OPENBLAS_NUM_THREADS': '1', 'OMP_NUM_THREADS': '1'},
         output='screen')])

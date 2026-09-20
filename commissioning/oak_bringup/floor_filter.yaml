@@ -1,0 +1,6 @@
+/oak_floor_filter:
+  ros__parameters:
+    floor_band_m: 0.025
+    max_rate_hz: 5.0
+    # Current temporary view has about 23-26% floor support.
+    min_floor_support: 0.20

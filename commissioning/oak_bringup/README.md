@@ -44,7 +44,7 @@ depth-only rate; cloud conversion/transport needs profiling before collision use
 
 Run `oak_floor_filter.launch.py` alongside the camera. It is also installed at
 `share/k9_ros2_nav/oak/` when this package is built. A standalone filter was
-started on the Pi as PID 5596 for commissioning; avoid starting a second copy.
+restarted on the Pi as PID 6995 for commissioning; avoid starting a second copy.
 
 - `/oak/points` remains unchanged.
 - `/oak/obstacles` contains finite forward-region points outside the floor band.
@@ -72,8 +72,8 @@ Final intended mount is level, with optical centre 26 cm above floor. Current
 physical mount is temporary (~24 cm with ~2.3-degree floor-relative tilt). Do not
 use the uncorrected model camera height for floor-height rejection.
 
-Three synthetic tests cover tilted floor with a 6 cm obstacle, wall-only input,
-and sparse/invalid input. Live visual confirmation with actual obstacles is
+Five synthetic tests cover tilted floor with a 6 cm obstacle, wall-only input,
+sparse/invalid input, and a partly visible floor with a 3 cm obstacle. Live visual confirmation with actual obstacles is
 still required, including loss of floor visibility and thin/low objects.
 
 ## Camera speckle filtering
@@ -92,3 +92,21 @@ view before judging noise reduction or small-object retention.
 The driver's stop service returned success but its component container then
 crashed (exit -11). Restarting the standalone launch restored the stream.
 Graceful shutdown remains unresolved.
+
+## Floor retune for the changed view
+
+The observed floor occupied about 23–26% of the original fitting region, below
+its 40% acceptance threshold. The commissioning launch now loads
+`floor_filter.yaml`, setting `min_floor_support: 0.20`; direct script invocation
+without this file retains the conservative 0.40 default. RANSAC now checks 500
+candidate planes rather than 100. Height limits (18–34 cm), tilt limit (15°),
+minimum 250 inliers, spatial extent requirements, and +/-2.5 cm rejection band
+are unchanged. Lower support permits fitting amid more clutter but also raises
+the risk of accepting another horizontal surface; this is temporary-view tuning.
+
+Live verification after restart: 62/62 valid estimates, 5.04 Hz. Height estimates
+ranged 0.2354–0.2644 m; latest height 0.2519 m, tilt 6.38°, support 0.314,
+8,063 floor points removed, processing 59.5 ms. Five synthetic tests passed,
+including partial floor visibility with a 3 cm obstacle and wall-only rejection
+at the lower support threshold. Recheck the physical book: synthetic retention
+does not establish small-object performance with this observed fit variation.

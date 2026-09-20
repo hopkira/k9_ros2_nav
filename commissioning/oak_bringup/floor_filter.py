@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 
-def fit_floor(points, seed=42):
+def fit_floor(points, seed=42, min_support=.40):
     """Return (downward normal, camera height, support), or None on weak evidence."""
     candidates = points[(points[:, 1] > .06) & (points[:, 2] > .35)
                         & (points[:, 2] < 2.5) & (np.abs(points[:, 0]) < 1.2)]
@@ -16,7 +16,7 @@ def fit_floor(points, seed=42):
     if len(candidates) > 1800:
         candidates = candidates[rng.choice(len(candidates), 1800, replace=False)]
     best = None
-    for _ in range(100):
+    for _ in range(500):
         a, b, c = candidates[rng.choice(len(candidates), 3, replace=False)]
         normal = np.cross(b-a, c-a)
         length = np.linalg.norm(normal)
@@ -32,7 +32,7 @@ def fit_floor(points, seed=42):
         count = int(mask.sum())
         if best is None or count > best[0]:
             best = count, mask
-    if best is None or best[0] < max(250, .40*len(candidates)):
+    if best is None or best[0] < max(250, min_support*len(candidates)):
         return None
     floor = candidates[best[1]]
     if np.ptp(floor[:, 0]) < .30 or np.ptp(floor[:, 2]) < .35:
@@ -48,12 +48,12 @@ def fit_floor(points, seed=42):
     return normal, distance, best[0]/len(candidates)
 
 
-def split_cloud(points, floor_band=.025):
+def split_cloud(points, floor_band=.025, min_support=.40):
     points = points[np.isfinite(points).all(axis=1)]
     # Bound work and visualisation to the forward camera region.
     points = points[(points[:, 2] >= .20) & (points[:, 2] <= 3.0)
                     & (np.abs(points[:, 0]) <= 1.5)]
-    plane = fit_floor(points)
+    plane = fit_floor(points, min_support=min_support)
     if plane is None:
         # Never clear space from a failed or stale plane estimate.
         return points, np.empty((0, 3), dtype=np.float32), None
@@ -76,6 +76,9 @@ def main():
     node = Node('oak_floor_filter')
     band = float(node.declare_parameter('floor_band_m', .025).value)
     rate = float(node.declare_parameter('max_rate_hz', 5.0).value)
+    min_support = float(node.declare_parameter('min_floor_support', .40).value)
+    if not .20 <= min_support <= 1.0:
+        raise ValueError('min_floor_support must be [.20,1]')
     if not 0 < band <= .05 or not 0 < rate <= 15:
         raise ValueError('floor_band_m must be (0,.05], max_rate_hz (0,15]')
     incoming = QoSProfile(depth=1, reliability=ReliabilityPolicy.BEST_EFFORT)
@@ -99,7 +102,7 @@ def main():
         started = time.monotonic()
         points = point_cloud2.read_points_numpy(
             message, field_names=('x', 'y', 'z'), skip_nans=True).reshape(-1, 3)
-        kept, removed, plane = split_cloud(points, band)
+        kept, removed, plane = split_cloud(points, band, min_support)
         obstacles.publish(point_cloud2.create_cloud_xyz32(message.header, kept))
         if floor_pub.get_subscription_count():
             floor_pub.publish(point_cloud2.create_cloud_xyz32(message.header, removed))

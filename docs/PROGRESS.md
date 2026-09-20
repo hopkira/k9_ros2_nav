@@ -120,3 +120,14 @@ Floor fitting currently reports invalid after a confirmed camera/scene change;
 repeat the book and floor visual checks before assessing the filter. The driver
 stop service crashed the container after reporting success; a fresh standalone
 launch restored operation. See the camera README for details.
+
+## Floor retune after camera/scene change
+
+Kept the +/-2.5 cm floor band and geometric bounds. Lowered commissioning
+minimum floor support from 40% to 20% and increased RANSAC trials to 500,
+because captured clouds showed roughly one-quarter floor support. The launch
+loads the new floor_filter.yaml; direct script default remains 40%.
+Deployed/rebuilt on the Pi and restarted only the floor filter (PID 6995).
+Five tests passed. Live check: 62/62 valid floor fits at 5.04 Hz; latest height
+25.19 cm and tilt 6.38°, height range 23.54–26.44 cm. Physical book retention
+and noise reduction need visual confirmation with the current scene.
