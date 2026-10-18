@@ -15,13 +15,13 @@ Default interfaces:
 
 Examples:
 
-  k9_move_test fd 1.0
-  k9_move_test bk 0.5
-  k9_move_test lt 1.5708
-  k9_move_test rt 3.14159
-  k9_move_test arc 1.0 1.5708
-  k9_move_test arc 1.0 -1.5708
-  k9_move_test stop
+  ros2 run k9_ros2_nav logo fd 1.0
+  ros2 run k9_ros2_nav logo bk 0.5
+  ros2 run k9_ros2_nav logo lt 1.5708
+  ros2 run k9_ros2_nav logo rt 3.14159
+  ros2 run k9_ros2_nav logo arc 1.0 1.5708
+  ros2 run k9_ros2_nav logo arc 1.0 -1.5708
+  logo stop
 
 Distances and radii are metres. Angles are radians.
 
@@ -46,6 +46,7 @@ from nav_msgs.msg import Odometry
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 
+# Usage: k9_move_test.py [options] <command> [<arg> ...]
 
 DEFAULT_CMD_VEL_TOPIC = "/diff_drive_controller/cmd_vel"
 DEFAULT_ODOM_TOPIC = "/diff_drive_controller/odom"

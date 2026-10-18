@@ -10,8 +10,15 @@ install(FILES
 install(DIRECTORY commissioning/oak_bringup/
   DESTINATION share/${PROJECT_NAME}/oak
   FILES_MATCHING PATTERN "*.py" PATTERN "*.yaml")
+
 install(PROGRAMS
   commissioning/motion/k9_move_test.py
   DESTINATION lib/${PROJECT_NAME}
+  RENAME logo
+)
+install(PROGRAMS
+  commissioning/motion/stopping_dist.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME stop_dist
 )
 ament_package()
